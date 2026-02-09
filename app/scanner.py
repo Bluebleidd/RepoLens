@@ -6,14 +6,11 @@ IGNORE_FILES = {'.DS_Store', 'package-lock.json', 'yarn.lock', '.env'}
 ALLOWED_EXTENSIONS = {'.py', '.js', '.ts', '.jsx', '.tsx', '.java', '.cpp', '.cs', '.go', '.rs', '.md'}
 
 def get_project_context(root_path: str) -> str:
-    """
-    Skanuje projekt i zwraca jego zawartość jako jeden sformatowany string.
-    """
     context_buffer = []
     root = Path(root_path)
 
     if not root.exists():
-        raise FileNotFoundError(f"Katalog {root_path} nie istnieje.")
+        raise FileNotFoundError(f"Directory {root_path} does not exist.")
 
     context_buffer.append(f"Project Structure for: {root.name}\n")
     
