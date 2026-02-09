@@ -10,7 +10,7 @@ RepoLens is a command-line tool that scans a local project directory, aggregates
 *   **Dry-Run Mode:** Preview which files will be analyzed without making any API calls.
 *   **Organized Output:** Saves reports to a dedicated `reports/` directory with versioned filenames.
 
-## Instalacja
+## Installation
 
 1.  **Clone the repository:**
 
@@ -35,7 +35,7 @@ RepoLens is a command-line tool that scans a local project directory, aggregates
     GEMINI_API_KEY="your_api_key_here"
     ```
 
-## Użycie
+## Use Cases
 
 *   **Run a full analysis:**
     `python main.py /path/to/your/project`
