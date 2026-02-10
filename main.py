@@ -15,13 +15,20 @@ console = Console()
 @app.command()
 def main(
     path: str = typer.Argument(..., help="Path to the project folder to analyze."),
+    output_dir: Path = typer.Option(None, "--output-dir", "-o", help="The directory where reports will be saved. Overrides REPORTS_DIR env var."),
     model: str = typer.Option(None, "--model", "-m", help="Gemini model to use. Overrides GEMINI_MODEL env var."),
     dry_run: bool = typer.Option(False, "--dry-run", help="Scan files and generate a preview without calling API."),
 ):
     target_model = model or os.getenv("GEMINI_MODEL")
 
+    reports_dir_path = (
+        output_dir
+        or (Path(d) if (d := os.getenv("REPORTS_DIR")) else None)
+        or Path("reports")
+    )
+
     if not target_model:
-        console.print("\n[bold red]❌ ERROR: No Gemini model specified![/bold red]")
+        console.print("\n[bold red]   ERROR: No Gemini model specified![/bold red]")
         console.print("You must either:")
         console.print(" 1. Set [bold yellow]GEMINI_MODEL[/bold yellow] in your [bold blue].env[/bold blue] file.")
         console.print(" 2. Or use the [bold yellow]--model[/bold yellow] option in the terminal.")
@@ -34,13 +41,12 @@ def main(
         raise typer.Exit(code=1)
 
     repo_name = project_path.resolve().name
-    output_dir = Path("reports") 
-    output_dir.mkdir(parents=True, exist_ok=True)
+    reports_dir_path.mkdir(parents=True, exist_ok=True)
 
     report_num = 1
     while True:
         candidate_name = f"{repo_name}_report_{report_num}.md"
-        candidate_path = output_dir / candidate_name
+        candidate_path = reports_dir_path / candidate_name
         
         if not candidate_path.exists():
             save_path = candidate_path
@@ -50,7 +56,7 @@ def main(
     with console.status(f"[bold green]Scanning files in {repo_name}...[/bold green]", spinner="dots"):
         try:
             context = get_project_context(str(project_path))
-            console.print(f"✓ Loaded context from: {project_path}")
+            console.print(f"  Loaded context from: {project_path}")
         except Exception as e:
             console.print(f"[bold red]Scanning failed:[/bold red] {e}")
             raise typer.Exit(code=1)
